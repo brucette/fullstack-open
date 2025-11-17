@@ -12,6 +12,10 @@ const Statistics = ({ good, neutral, bad }) => {
   const calculatePositive = (good, total) => { 
     return total === 0 ? 0 : (good / total) * 100;
   }
+  
+  if (total === 0) {
+    return <p>No feedback given</p>
+  }
 
   return (
     <>
