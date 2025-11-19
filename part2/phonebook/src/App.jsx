@@ -9,8 +9,15 @@ function App() {
     const personObject = {
       name: newName
     }
-    setPersons([...persons, personObject])
-    setNewName('')
+
+    const isAlreadyAdded = persons.some(person => person.name.toLowerCase() === newName.toLowerCase())
+    
+    if (isAlreadyAdded) {
+      alert(`${newName} is already added to phonebook`)
+    } else {
+      setPersons([...persons, personObject])
+      setNewName('')
+    }
   }
 
   return (
