@@ -1,13 +1,6 @@
 import CityWeather from "./CityWeather";
-import Notification from "./Notification";
 
 const Country = ({ country, capitalWeather = null, error = null }) => {
-
-  const kelvinToCelsius = (k) => (k - 273.15).toFixed(2);
-  
-  const iconCode = capitalWeather?.weather[0].icon;
-  const description = capitalWeather?.weather[0].description;
-  const iconSource = `https://openweathermap.org/img/wn/${iconCode}@2x.png`
   
   return (
     <>
@@ -39,13 +32,8 @@ const Country = ({ country, capitalWeather = null, error = null }) => {
         {capitalWeather &&
           <CityWeather 
             city={country.capital}
-            imgSrc={iconSource}
-            imgAlt={description}
-            temp={kelvinToCelsius(capitalWeather.main.temp)}
-            wind={capitalWeather.wind.speed} />
-        }
-        {error && 
-          <Notification message={`Could not get weather information for ${country.capital}`} />
+            weather={capitalWeather}
+            error={error} />
         }
       </div>
     </>
