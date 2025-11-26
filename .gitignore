@@ -1,2 +1,5 @@
 /test
 test.js
+node_modules
+/backend
+/part2-notes-frontend
