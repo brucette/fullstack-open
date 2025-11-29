@@ -78,7 +78,7 @@ function App() {
         hideNotification(setSuccessMessage, 3000);
       })
       .catch((error) => {
-        setErrorMessage(`something went wrong adding ${name}`);
+        setErrorMessage(`something went wrong adding person to phonebook`);
         hideNotification(setErrorMessage, 3000);
         console.error(error);
       });
@@ -88,9 +88,9 @@ function App() {
     if (window.confirm(`Delete ${name}?`)) {
       personService
         .remove(id)
-        .then((removedperson) => {
+        .then(() => {
           setPersons(persons.filter((person) => person.id !== id));
-          setSuccessMessage(`${removedperson.name} deleted from phonebook`);
+          setSuccessMessage(`${name} deleted from phonebook`);
           hideNotification(setSuccessMessage, 3000);
         })
         .catch((error) => {
