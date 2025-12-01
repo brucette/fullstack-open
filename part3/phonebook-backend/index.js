@@ -1,5 +1,7 @@
+require('dotenv').config()
 const express = require('express')
 const morgan = require('morgan')
+const Person = require('./models/person')
 
 let persons = [
     { 
@@ -47,7 +49,9 @@ app.get('/info', (request, response) => {
 })
 
 app.get('/api/persons', (request, response) => {
-  response.json(persons)
+  Person.find({}).then(persons => {
+    response.json(persons)
+  })
 })
 
 app.get('/api/persons/:id', (request, response) => {
@@ -61,15 +65,15 @@ app.get('/api/persons/:id', (request, response) => {
   }
 })
 
+app.put('/api/persons/:id', (request, response) => {
+
+})
+
 app.delete('/api/persons/:id', (request, response) => {
   const id = request.params.id
   persons = persons.filter(p => p.id !== id)
   response.status(204).end()
 })
-
-const generateId = () => {
-  return String(Math.floor(Math.random() * 1000000))
-}
 
 app.post('/api/persons', (request, response) => {
   const { name, number } = request.body
@@ -77,9 +81,10 @@ app.post('/api/persons', (request, response) => {
 
   if (!name) {
     errors.push('name missing')
-  } else if (persons.some(p => p.name.toLowerCase() === name.toLowerCase())) {
-    errors.push('name already exists, it must be unique')
-  }
+  } 
+  // else if (persons.some(p => p.name.toLowerCase() === name.toLowerCase())) {
+  //   errors.push('name already exists, it must be unique')
+  // }
   
   if (!number) {
     errors.push('number is missing')
@@ -91,17 +96,17 @@ app.post('/api/persons', (request, response) => {
     })
   }
 
-  const person = {
-    id: generateId(),
+  const person = new Person({
     name, 
     number
-  }
+  })
 
-  persons = [...persons, person]
-  response.json(person)
+  person.save().then(savedPerson => {
+    response.json(savedPerson)
+  })
 })
 
-const PORT = process.env.port || 3001
+const PORT = process.env.PORT
 app.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}`);
 })

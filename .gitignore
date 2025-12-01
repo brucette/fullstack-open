@@ -4,3 +4,4 @@ node_modules
 /backend
 /part2-notes-*
 .DS_Store
+.env
