@@ -4,22 +4,24 @@ const PersonForm = ({
   onNameChange, 
   number, 
   onNumberChange, 
-  formatPhoneNumber 
 }) => {
   return (
     <form onSubmit={onSubmit}>
       <div>
         name:{" "}
         <input 
+          style={{ width: "30%" }}
           value={name} 
           onChange={(e) => onNameChange(e.target.value)} />
       </div>
       <div>
         number:{" "}
         <input
+          style={{ width: "30%" }}
           type="tel"
           value={number}
-          onChange={(e) => onNumberChange(formatPhoneNumber(e.target.value))}
+          placeholder="e.g. 09-1234556 or 040-22334455"
+          onChange={(e) => onNumberChange(e.target.value)}
         />
       </div>
       <div>

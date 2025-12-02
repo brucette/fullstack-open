@@ -23,6 +23,22 @@ function App() {
     });
   }, []);
 
+  const emptyFormFields = () => {
+    setName("");
+    setNumber("");
+  };
+
+  const showSuccess = (message, time) => {
+    setSuccessMessage(message);
+    hideNotification(setSuccessMessage, time);
+  };
+
+  const showError = (error, time) => {
+    setErrorMessage(error.response.data.error);
+    hideNotification(setErrorMessage, time);
+    console.error(error);
+  };
+
   const addPerson = (e) => {
     e.preventDefault();
 
@@ -54,15 +70,11 @@ function App() {
                 person.id === existing.id ? updatedPerson : person
               )
             );
-            setName("");
-            setNumber("");
-            setSuccessMessage(`${updatedPerson.name} updated in phonebook`);
-            hideNotification(setSuccessMessage, 3000);
+            emptyFormFields();
+            showSuccess(`${updatedPerson.name} updated in phonebook`, 3000);
           })
           .catch((error) => {
-            setErrorMessage(`something went wrong updating ${name}`);
-            hideNotification(setErrorMessage, 3000);
-            console.error(error);
+            showError(error, 4000);
           });
       }
       return;
@@ -72,15 +84,11 @@ function App() {
       .create(personObject)
       .then((createdPerson) => {
         setPersons([...persons, createdPerson]);
-        setName("");
-        setNumber("");
-        setSuccessMessage(`${createdPerson.name} added to phonebook`);
-        hideNotification(setSuccessMessage, 3000);
+        emptyFormFields();
+        showSuccess(`${createdPerson.name} added to phonebook`, 3000);
       })
       .catch((error) => {
-        setErrorMessage(`something went wrong adding person to phonebook`);
-        hideNotification(setErrorMessage, 3000);
-        console.error(error);
+        showError(error, 4000)
       });
   };
 
@@ -90,19 +98,12 @@ function App() {
         .remove(id)
         .then(() => {
           setPersons(persons.filter((person) => person.id !== id));
-          setSuccessMessage(`${name} deleted from phonebook`);
-          hideNotification(setSuccessMessage, 3000);
+          showSuccess(`${name} deleted from phonebook`, 3000)
         })
         .catch((error) => {
-          setErrorMessage(`${name} has already been removed from the system`);
-          hideNotification(setErrorMessage, 3000);
-          console.error(error);
+          showError(error, 4000)
         });
     }
-  };
-
-  const formatPhoneNumber = (input) => {
-    return input.replace(/[^0-9+()\s-]/g, "");
   };
 
   const namesToShow = persons.filter((person) =>
@@ -113,7 +114,9 @@ function App() {
     <div>
       <h2>Phonebook</h2>
       {errorMessage && <Notification message={errorMessage} type="error" />}
-      {successMessage && <Notification message={successMessage} type="success" />}
+      {successMessage && (
+        <Notification message={successMessage} type="success" />
+      )}
       <Filter value={searchTerm} onChange={setSearchTerm} />
       <h3>Add a new person</h3>
       <PersonForm
@@ -122,7 +125,6 @@ function App() {
         onNameChange={setName}
         number={number}
         onNumberChange={setNumber}
-        formatPhoneNumber={formatPhoneNumber}
       />
       <h3>Numbers</h3>
       <Persons namesToShow={namesToShow} handleDelete={deletePerson} />
