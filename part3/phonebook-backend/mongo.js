@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 
 if (process.argv.length < 3) {
-  console.log('give password as argument');
+  console.log('give password as argument')
   process.exit(1)
 }
 
@@ -11,26 +11,26 @@ const number = process.argv[4]
 
 const url = `mongodb+srv://happyCloud:${password}@cluster0.6egi0ao.mongodb.net/phonebook?appName=Cluster0`
 mongoose.set('strictQuery',false)
-mongoose.connect(url);
+mongoose.connect(url)
 
 const personSchema = new mongoose.Schema({
-    name: String, 
-    number: String
+  name: String,
+  number: String
 })
 
-const Person = mongoose.model("Person", personSchema)
+const Person = mongoose.model('Person', personSchema)
 
 const person = new Person({
   name,
   number
 })
 
-const promise = name && number 
-? person.save().then(result => {
-    console.log(`added ${name} number ${number} to phonebook`);
+const promise = name && number
+  ? person.save().then(() => {
+    console.log(`added ${name} number ${number} to phonebook`)
   })
-: Person.find({}).then(result => {
-    if (result.length > 0) result.forEach(p => console.log(`${p.name} ${p.number}`)) 
+  : Person.find({}).then(result => {
+    if (result.length > 0) result.forEach(p => console.log(`${p.name} ${p.number}`))
     else (console.log('no entries currently in the phonebook'))
   })
 
