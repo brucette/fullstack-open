@@ -2,6 +2,6 @@
 test.js
 node_modules
 /backend
-/part2-notes-*
+/notes-*
 .DS_Store
 .env
