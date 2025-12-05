@@ -46,71 +46,65 @@ test('dummy returns one', () => {
 })
 
 describe('total likes', () => {
-  test('of a bigger list is calculated right', () => {
-    const expected = 73
-    const result = listHelper.totalLikes(blogsMany)
-    assert.strictEqual(result, expected)
-  })
+  const totalLikesCases = [
+    { name: 'of a bigger list is calculated right', blogs: blogsMany, expected: 73 },
+    { name: 'of empty list of blogs is zero', blogs: blogsEmpty, expected: 0 },
+    { name: 'when list has only one blog equals the likes of that', blogs: blogsOne, expected: blogsOne[0].likes }
+  ]
 
-  test('of empty list of blogs is zero', () => {
-    const result = listHelper.totalLikes(blogsEmpty)
-    assert.strictEqual(result, 0)
-  })
-
-  test('when list has only one blog equals the likes of that', () => {
-    const result = listHelper.totalLikes(blogsOne)
-    assert.strictEqual(result, blogsOne[0].likes)
+  totalLikesCases.forEach(({ name, blogs, expected }) => {
+    test(name, () => {
+      const result = listHelper.totalLikes(blogs)
+      assert.strictEqual(result, expected)
+    })
   })
 })
 
-describe('favourite blog', () => { 
-  test('of a list is calculated correctly', () => { 
-    const favorite =  blogsMany[0]
-    const result = listHelper.favoriteBlog(blogsMany)
-    assert.deepStrictEqual(result, favorite)
+describe('favourite blog', () => {
+  const favouriteBlogCases = [
+    { name: 'of a list is calculated correctly', blogs: blogsMany, expected: blogsMany[0] },
+    { name: 'of a single blog returns that blog', blogs: blogsOne, expected: blogsOne[0] }
+  ]
+
+  favouriteBlogCases.forEach(({ name, blogs, expected }) => {
+    test(name, () => {
+      const result = listHelper.favoriteBlog(blogs)
+      assert.deepStrictEqual(result, expected)
+    })
   })
 
   test('of empty list returns null', () => { 
     const result = listHelper.favoriteBlog(blogsEmpty)
     assert.strictEqual(result, null)
   })
-
-  test('of a single blog returns that blog', () => {
-    const result = listHelper.favoriteBlog(blogsOne)
-    assert.deepStrictEqual(result, blogsOne[0])
-  })
 })
 
-describe('most blogs', () => { 
-  test('of a list returns the correct author and number of blogs', () => { 
-    const result = listHelper.mostBlogs(blogsMany)
-    assert.deepStrictEqual(result, { author: 'Michael Reyes', blogs: 2 })
-  })
+describe('most blogs', () => {
+  const mostBlogsCases = [
+    { name: 'of a list returns the correct author and number of blogs', blogs: blogsMany, expected: { author: 'Michael Reyes', blogs: 2 } },
+    { name: 'empty list of blogs returns an empty object', blogs: blogsEmpty, expected: {} },
+    { name: 'list of one blog returns that author', blogs: blogsOne, expected: { author: "Tina Bruce", blogs: 1 } }
+  ]
 
-  test('empty list of blogs returns an empty object', () => { 
-    const result = listHelper.mostBlogs(blogsEmpty)
-    assert.deepStrictEqual(result, {})  
-  })
-
-  test('list of one blog returns that author', () => {
-    const result = listHelper.mostBlogs(blogsOne)
-    assert.deepStrictEqual(result, { author: "Tina Bruce", blogs: 1 })
+  mostBlogsCases.forEach(({ name, blogs, expected }) => {
+    test(name, () => {
+      const result = listHelper.mostBlogs(blogs)
+      assert.deepStrictEqual(result, expected)
+    })
   })
 })
 
 describe('most likes', () => { 
-  test('of a list returns the correct author and number of likes', () => {
-    const result = listHelper.mostLikes(blogsMany)
-    assert.deepStrictEqual(result, { author: "Michael Reyes", likes: 38 })
-  })
+  const mostLikesCases = [
+    { name: 'of a list returns the correct author and number of likes', blogs: blogsMany, expected: { author: 'Michael Reyes', likes: 38 } },
+    { name: 'empty list of blogs returns an empty object', blogs: blogsEmpty, expected: {} },
+    { name: 'list of one blog returns that author', blogs: blogsOne, expected: { author: "Tina Bruce", likes: 50 } }
+  ]
 
-  test('empty list of blogs returns an empty object', () => { 
-    const result = listHelper.mostLikes(blogsEmpty)
-    assert.deepStrictEqual(result, {})  
-  })
-
-  test('list of one blog returns that author', () => {
-    const result = listHelper.mostLikes(blogsOne)
-    assert.deepStrictEqual(result, { author: "Tina Bruce", likes: 50 })
+  mostLikesCases.forEach(({ name, blogs, expected }) => {
+    test(name, () => {
+      const result = listHelper.mostLikes(blogs)
+      assert.deepStrictEqual(result, expected)
+    })
   })
 })
