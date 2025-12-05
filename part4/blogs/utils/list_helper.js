@@ -6,17 +6,17 @@ const totalLikes = (blogs) => {
   const reducer = (sum, item) => {
     return sum + item.likes
   }
-  return blogs.length === 0 
-  ? 0
-  : blogs.reduce(reducer, 0)
+  return blogs.length === 0
+    ? 0
+    : blogs.reduce(reducer, 0)
 }
 
-const favoriteBlog = (blogs) => { 
-  return blogs.length === 0 
+const favoriteBlog = (blogs) => {
+  return blogs.length === 0
     ? null
     : blogs.reduce((max, blog) => {
       return blog.likes > max.likes ? blog : max
-    }, blogs[0]) 
+    }, blogs[0])
 }
 const countByAuthor = (blogs, getIncrementValue = () => 1) => {
   return blogs.reduce((counts, blog) => {
@@ -31,7 +31,7 @@ const maxEntry = (countsObj) => {
   })
 }
 
-const mostBlogs = (blogs) => { 
+const mostBlogs = (blogs) => {
   if (blogs.length === 0) return {}
   const counts = countByAuthor(blogs)
   const [author, blogsCount] = maxEntry(counts)
