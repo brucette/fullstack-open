@@ -30,4 +30,33 @@ test('blog id is named id and not _id', async () => {
   assert.strictEqual(blog._id, undefined)
 })
 
+test('a valid blog is added successfully', async () => {
+  const newBlog = {
+    title: 'Introduction to GraphQL for Beginners',
+    author: 'James Wilson',
+    url: 'https://example.com/blog/graphql-intro',
+    likes: 0,
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(201)
+    .expect('Content-Type', /application\/json/)
+
+  const blogsAtEnd = await helper.blogsInDb()
+  assert.strictEqual(blogsAtEnd.length, helper.initalBlogs.length + 1)
+
+  const savedBlog = blogsAtEnd.find((b) => b.title === newBlog.title)
+  assert.deepStrictEqual(
+    {
+      title: savedBlog.title,
+      author: savedBlog.author,
+      url: savedBlog.url,
+      likes: savedBlog.likes,
+    },
+    newBlog
+  )
+})
+
 after(async () => await mongoose.connection.close())
