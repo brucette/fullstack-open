@@ -78,4 +78,30 @@ test('likes defaults to 0 if missing', async () => {
   assert.strictEqual(savedBlog.likes, 0)
 })
 
+test('respond with 400 bad request if title missing', async () => {
+  const blogWithoutTitle = {
+    author: 'Tina Bruce',
+    url: 'https://example.com/blog/fullstacking-is-hard',
+    likes: 45
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(blogWithoutTitle)
+    .expect(400)
+})
+
+test('respond with 400 bad request if url missing', async () => {
+  const blogWithoutUrl = {
+    title: 'Fullstacking is hard',
+    author: 'Tina Bruce',
+    likes: 45
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(blogWithoutUrl)
+    .expect(400)
+})
+
 after(async () => await mongoose.connection.close())
