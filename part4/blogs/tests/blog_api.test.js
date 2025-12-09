@@ -59,4 +59,23 @@ test('a valid blog is added successfully', async () => {
   )
 })
 
+test('likes defaults to 0 if missing', async () => {
+  const newBlog = {
+    title: 'Deploying Node.js Apps to Heroku',
+    author: 'Sophia Lee',
+    url: 'https://example.com/blog/nodejs-heroku-deploy',
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(201)
+    .expect('Content-Type', /application\/json/)
+
+  const blogsAtEnd = await helper.blogsInDb()
+  const savedBlog = blogsAtEnd.find(b => b.title === newBlog.title)
+
+  assert.strictEqual(savedBlog.likes, 0)
+})
+
 after(async () => await mongoose.connection.close())
