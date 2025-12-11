@@ -13,8 +13,19 @@ const initalBlogs = [
     url: 'https://example.com/blog/express-mongo-api',
     likes: 8,
   },
-
 ]
+
+const nonExistingId = async () => {
+  const blog = new Blog({
+    title: 'Fullstacking is hard',
+    author: 'Tina Bruce',
+    url: 'https://example.com/blog/full-stacking-hard',
+  })
+  await blog.save()
+  await blog.deleteOne()
+
+  return blog._id.toString()
+}
 
 const blogsInDb = async () => {
   const blogs = await Blog.find({})
@@ -23,5 +34,6 @@ const blogsInDb = async () => {
 
 module.exports = {
   blogsInDb,
-  initalBlogs
+  initalBlogs,
+  nonExistingId
 }
