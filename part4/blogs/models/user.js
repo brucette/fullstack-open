@@ -3,7 +3,7 @@ const mongoose = require('mongoose')
 const userSchema = new mongoose.Schema({
   username: {
     type: String,
-    minLength: 4,
+    minLength: 3,
     maxLength: 20,
     match: /^[a-zA-Z0-9_]+$/,
     required: [true, 'Username is required'],
@@ -11,13 +11,11 @@ const userSchema = new mongoose.Schema({
   },
   name: {
     type: String,
-    minLength: 4,
+    minLength: 3,
     maxLength: 20,
-    required: [true, 'Name is required']
   },
   passwordHash: {
     type: String,
-    minLength: 8,
     required: [true, 'Password is required']
   },
 })

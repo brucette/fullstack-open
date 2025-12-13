@@ -1,4 +1,10 @@
 const Blog = require('../models/blog')
+const User = require('../models/user')
+const app = require('../app')
+const supertest = require('supertest')
+const assert = require('node:assert')
+
+const api = supertest(app)
 
 const initalBlogs = [
   {
@@ -32,8 +38,29 @@ const blogsInDb = async () => {
   return blogs.map((b) => b.toJSON())
 }
 
+const usersInDb = async () => {
+  const users = await User.find({})
+  return users.map((u) => u.toJSON())
+}
+
+const expectCreationToFail = async (newUser) => {
+  const usersAtStart = await usersInDb()
+
+  const result = await api
+    .post('/api/users')
+    .send(newUser)
+    .expect(400)
+    .expect('Content-Type', /application\/json/)
+
+  const usersAtEnd = await usersInDb()
+  assert.strictEqual(usersAtStart.length, usersAtEnd.length)
+  return result
+}
+
 module.exports = {
   blogsInDb,
   initalBlogs,
-  nonExistingId
+  nonExistingId,
+  usersInDb,
+  expectCreationToFail
 }
