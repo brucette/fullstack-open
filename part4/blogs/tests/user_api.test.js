@@ -1,12 +1,39 @@
 // const supertest = require('supertest')
 // const app = require('../app')
 // const api = supertest(app)
+// const assert = require('node:assert')
 const { describe, test, beforeEach, after } = require('node:test')
-const assert = require('node:assert')
 const User = require('../models/user')
 const helper = require('./test_helper')
 const mongoose = require('mongoose')
 const bcrypt = require('bcrypt')
+
+const invalidUsers = [
+  {
+    condition: 'username is missing',
+    user: { username: '', name: 'Tina', password: 'salainen' },
+    errorMessage: 'Username is required',
+  },
+  {
+    condition: 'password is too short',
+    user: { username: 'tinity', name: 'Tina', password: 'sa' },
+    errorMessage: 'password must be at least 3 characters long',
+  },
+  {
+    condition: 'name is too long',
+    user: {
+      username: 'tinity',
+      name: 'this name is too long',
+      password: 'salainen',
+    },
+    errorMessage: 'User validation failed:',
+  },
+  {
+    condition: 'username already taken',
+    user: { username: 'root', name: 'Superuser', password: 'salainen' },
+    errorMessage: 'expected `username` to be unique',
+  },
+]
 
 describe('when there is initially one user in db', () => {
   beforeEach(async () => {
@@ -19,44 +46,11 @@ describe('when there is initially one user in db', () => {
   })
 
   describe('creating a user', () => {
-    test('fails with proper statuscode and message if username is missing', async () => {
-      const result = await helper.expectCreationToFail({
-        username: '',
-        name: 'Tina',
-        password: 'salainen',
-      })
-      assert(result.body.error.includes('Username is required'))
-    })
 
-    test('fails with proper statuscode and message if password is too short', async () => {
-      const result = await helper.expectCreationToFail({
-        username: 'tinity',
-        name: 'Tina',
-        password: 'sa',
+    invalidUsers.forEach((u) => {
+      test(`fails with proper statuscode and message if ${u.condition}`, async () => {
+        await helper.expectAddInvalidUserToFail(u.user, u.errorMessage)
       })
-      assert(
-        result.body.error.includes(
-          'password must be at least 3 characters long'
-        )
-      )
-    })
-
-    test('fails with proper statuscode and message if name is too long', async () => {
-      const result = await helper.expectCreationToFail({
-        username: 'tinity',
-        name: 'this name consists too many characters',
-        password: 'salainen',
-      })
-      assert(result.body.error.includes('User validation failed:'))
-    })
-
-    test('fails with proper statuscode and message if username already taken', async () => {
-      const result = await helper.expectCreationToFail({
-        username: 'root',
-        name: 'Superuser',
-        password: 'salainen',
-      })
-      assert(result.body.error.includes('expected `username` to be unique'))
     })
   })
 })

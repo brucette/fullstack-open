@@ -43,7 +43,7 @@ const usersInDb = async () => {
   return users.map((u) => u.toJSON())
 }
 
-const expectCreationToFail = async (newUser) => {
+const expectAddInvalidUserToFail = async (newUser, message) => {
   const usersAtStart = await usersInDb()
 
   const result = await api
@@ -54,7 +54,7 @@ const expectCreationToFail = async (newUser) => {
 
   const usersAtEnd = await usersInDb()
   assert.strictEqual(usersAtStart.length, usersAtEnd.length)
-  return result
+  assert(result.body.error.includes(message))
 }
 
 module.exports = {
@@ -62,5 +62,5 @@ module.exports = {
   initalBlogs,
   nonExistingId,
   usersInDb,
-  expectCreationToFail
+  expectAddInvalidUserToFail,
 }
