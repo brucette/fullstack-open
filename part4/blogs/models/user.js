@@ -7,7 +7,7 @@ const userSchema = new mongoose.Schema({
     maxLength: 20,
     match: /^[a-zA-Z0-9_]+$/,
     required: [true, 'Username is required'],
-    unique: true
+    unique: true,
   },
   name: {
     type: String,
@@ -16,8 +16,14 @@ const userSchema = new mongoose.Schema({
   },
   passwordHash: {
     type: String,
-    required: [true, 'Password is required']
+    required: [true, 'Password is required'],
   },
+  blogs: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Blog',
+    },
+  ],
 })
 
 userSchema.set('toJSON', {
@@ -26,7 +32,7 @@ userSchema.set('toJSON', {
     delete returnedObject._id
     delete returnedObject.__v
     delete returnedObject.passwordHash
-  }
+  },
 })
 
 const User = mongoose.model('User', userSchema)

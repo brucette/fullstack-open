@@ -6,13 +6,24 @@ content-type: application/json
     "name": "Captain Adama",
     "password": "salainenindeed"
 }
+
 ###
 POST http://localhost:3003/api/users
 content-type: application/json
 
 {
-    "username": "boomerino",
-    "name": "this name consists too many characters",
+    "username": "cadama",
+    "name": "Captain Adama",
     "password": "salainen"
 }
+
 ###
+POST http://localhost:3003/api/blogs
+content-type: application/json
+
+{
+    "title": "Find the promise land",
+    "author": "Holy Landis",
+    "url": "https://example.com/blog/promise-land",
+    "likes": 0
+}
