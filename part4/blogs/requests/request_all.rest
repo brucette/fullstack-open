@@ -30,11 +30,18 @@ content-type: application/json
 POST http://localhost:3003/api/blogs
 content-type: application/json
 Authorization: Bearer <GET TOTKEN BY LOGGING IN>
-# Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImNhZGFtYSIsImlkIjoiNjkzZGQxZDg5NDUyMmIxOGY2YTM5ZDJjIiwiaWF0IjoxNzY2MTYwNTcxfQ.GHyFmsRcvXGDc38Xuej2cvDuEfDCL01tRD31KWDOmJE
 
 {
     "title": "Find the promise land3",
     "author": "Holy Landis",
     "url": "https://example.com/blog/promise-land3",
     "likes": 0
+}
+
+###
+DELETE http://localhost:3003/api/blogs/69456918e40d1aa1ec5caa2c
+content-type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImNhZGFtYSIsImlkIjoiNjkzZGQxZDg5NDUyMmIxOGY2YTM5ZDJjIiwiaWF0IjoxNzY2MTczNTkxfQ.r3eBuZVLwAjTaABMl8prg-al2f5_tp5ZLh3oIgnsJfY
+
+{
 }
