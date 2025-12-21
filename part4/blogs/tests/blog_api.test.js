@@ -56,19 +56,9 @@ describe('when there is initially some blogs saved', () => {
 
   describe('addition of a new blog', () => {
     test('a valid blog is added successfully', async () => {
-      const newBlog = {
-        title: 'Introduction to GraphQL for Beginners',
-        author: 'James Wilson',
-        url: 'https://example.com/blog/graphql-intro',
-        likes: 0,
-      }
+      const newBlog = helper.validBlog
 
-      await api
-        .post('/api/blogs')
-        .set('authorization', `Bearer ${token}`)
-        .send(newBlog)
-        .expect(201)
-        .expect('Content-Type', /application\/json/)
+      await helper.expectAddBlogResult(token, newBlog, 201)
 
       const blogsAtEnd = await helper.blogsInDb()
       assert.strictEqual(blogsAtEnd.length, helper.initalBlogs.length + 1)
@@ -86,12 +76,7 @@ describe('when there is initially some blogs saved', () => {
     })
 
     test('respond with 401 if not authenticated', async () => {
-      const newBlog = {
-        title: 'Introduction to GraphQL for Beginners',
-        author: 'James Wilson',
-        url: 'https://example.com/blog/graphql-intro',
-        likes: 0,
-      }
+      const newBlog = helper.validBlog
 
       await api.post('/api/blogs').send(newBlog).expect(401)
       const blogsAtEnd = await helper.blogsInDb()
@@ -99,51 +84,23 @@ describe('when there is initially some blogs saved', () => {
     })
 
     test('likes defaults to 0 if missing', async () => {
-      const newBlog = {
-        title: 'Deploying Node.js Apps to Heroku',
-        author: 'Sophia Lee',
-        url: 'https://example.com/blog/nodejs-heroku-deploy',
-      }
-
-      await api
-        .post('/api/blogs')
-        .set('authorization', `Bearer ${token}`)
-        .send(newBlog)
-        .expect(201)
-        .expect('Content-Type', /application\/json/)
+      const blogWithoutLikes = helper.blogWithoutLikes
+      await helper.expectAddBlogResult(token, blogWithoutLikes, 201)
 
       const blogsAtEnd = await helper.blogsInDb()
-      const savedBlog = blogsAtEnd.find((b) => b.title === newBlog.title)
+      const savedBlog = blogsAtEnd.find((b) => b.title === blogWithoutLikes.title)
 
       assert.strictEqual(savedBlog.likes, 0)
     })
 
     test('respond with 400 bad request if title missing', async () => {
-      const blogWithoutTitle = {
-        author: 'Tina Bruce',
-        url: 'https://example.com/blog/fullstacking-is-hard',
-        likes: 45,
-      }
-
-      await api
-        .post('/api/blogs')
-        .set('authorization', `Bearer ${token}`)
-        .send(blogWithoutTitle)
-        .expect(400)
+      const blogWithoutTitle = helper.blogWithoutTitle
+      await helper.expectAddBlogResult(token, blogWithoutTitle, 400)
     })
 
     test('respond with 400 bad request if url missing', async () => {
-      const blogWithoutUrl = {
-        title: 'Fullstacking is hard',
-        author: 'Tina Bruce',
-        likes: 45,
-      }
-
-      await api
-        .post('/api/blogs')
-        .send(blogWithoutUrl)
-        .set('authorization', `Bearer ${token}`)
-        .expect(400)
+      const blogWithoutUrl = helper.blogWithoutUrl
+      await helper.expectAddBlogResult(token, blogWithoutUrl, 400)
     })
   })
 

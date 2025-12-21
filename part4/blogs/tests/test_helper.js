@@ -21,6 +21,31 @@ const initalBlogs = [
   },
 ]
 
+const validBlog = {
+  title: 'Introduction to GraphQL for Beginners',
+  author: 'James Wilson',
+  url: 'https://example.com/blog/graphql-intro',
+  likes: 0,
+}
+
+const blogWithoutTitle = {
+  author: 'Tina Bruce',
+  url: 'https://example.com/blog/fullstacking-is-hard',
+  likes: 45,
+}
+
+const blogWithoutUrl = {
+  title: 'Fullstacking is hard',
+  author: 'Tina Bruce',
+  likes: 45,
+}
+
+const blogWithoutLikes = {
+  title: 'Deploying Node.js Apps to Heroku',
+  author: 'Sophia Lee',
+  url: 'https://example.com/blog/nodejs-heroku-deploy',
+}
+
 const nonExistingId = async () => {
   const blog = new Blog({
     title: 'Fullstacking is hard',
@@ -57,10 +82,25 @@ const expectAddInvalidUserToFail = async (newUser, message) => {
   assert(result.body.error.includes(message))
 }
 
+const expectAddBlogResult = async (token, newBlog, statusCode) => {
+  await api
+    .post('/api/blogs')
+    .set('authorization', `Bearer ${token}`)
+    .send(newBlog)
+    .expect(statusCode)
+    .expect('Content-Type', /application\/json/)
+}
+
+
 module.exports = {
-  blogsInDb,
   initalBlogs,
+  validBlog,
+  blogWithoutTitle,
+  blogWithoutUrl,
+  blogWithoutLikes,
+  blogsInDb,
   nonExistingId,
   usersInDb,
   expectAddInvalidUserToFail,
+  expectAddBlogResult,
 }
