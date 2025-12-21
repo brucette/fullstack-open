@@ -39,6 +39,13 @@ Authorization: Bearer <GET TOTKEN BY LOGGING IN>
 }
 
 ###
+GET http://localhost:3003/api/blogs
+content-type: application/json
+
+{
+}
+
+###
 DELETE http://localhost:3003/api/blogs/69456918e40d1aa1ec5caa2c
 content-type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImNhZGFtYSIsImlkIjoiNjkzZGQxZDg5NDUyMmIxOGY2YTM5ZDJjIiwiaWF0IjoxNzY2MTczNTkxfQ.r3eBuZVLwAjTaABMl8prg-al2f5_tp5ZLh3oIgnsJfY

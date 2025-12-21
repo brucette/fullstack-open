@@ -1,17 +1,40 @@
 const assert = require('node:assert')
-const { test, beforeEach, after, describe } = require('node:test')
+const { test, beforeEach, after, describe, before } = require('node:test')
 const supertest = require('supertest')
 const app = require('../app')
 const mongoose = require('mongoose')
 const Blog = require('../models/blog')
+const User = require('../models/user')
 const helper = require('./test_helper')
+const bcrypt = require('bcrypt')
 
 const api = supertest(app)
 
+let token
+let userId
 describe('when there is initially some blogs saved', () => {
+  before(async () => {
+    const username = 'tokenTestUser'
+    const name = 'tokenitis'
+    const password = 'sekrette'
+    await User.deleteOne({ username })
+
+    const passwordHash = await bcrypt.hash(password, 10)
+
+    const user = new User({ username, name, passwordHash })
+    await user.save()
+
+    const result = await api.post('/api/login').send({ username, password })
+    token = result.body.token
+
+    const createdUser = await User.findOne({ username })
+    userId = createdUser._id
+  })
+
   beforeEach(async () => {
     await Blog.deleteMany({})
-    await Blog.insertMany(helper.initalBlogs)
+    const manyBlogs = helper.initalBlogs.map((b) => ({ ...b, user: userId }))
+    await Blog.insertMany(manyBlogs)
   })
 
   test('all blogs are returned and in json', async () => {
@@ -42,6 +65,7 @@ describe('when there is initially some blogs saved', () => {
 
       await api
         .post('/api/blogs')
+        .set('authorization', `Bearer ${token}`)
         .send(newBlog)
         .expect(201)
         .expect('Content-Type', /application\/json/)
@@ -61,6 +85,19 @@ describe('when there is initially some blogs saved', () => {
       )
     })
 
+    test('respond with 401 if not authenticated', async () => {
+      const newBlog = {
+        title: 'Introduction to GraphQL for Beginners',
+        author: 'James Wilson',
+        url: 'https://example.com/blog/graphql-intro',
+        likes: 0,
+      }
+
+      await api.post('/api/blogs').send(newBlog).expect(401)
+      const blogsAtEnd = await helper.blogsInDb()
+      assert.strictEqual(blogsAtEnd.length, helper.initalBlogs.length)
+    })
+
     test('likes defaults to 0 if missing', async () => {
       const newBlog = {
         title: 'Deploying Node.js Apps to Heroku',
@@ -70,6 +107,7 @@ describe('when there is initially some blogs saved', () => {
 
       await api
         .post('/api/blogs')
+        .set('authorization', `Bearer ${token}`)
         .send(newBlog)
         .expect(201)
         .expect('Content-Type', /application\/json/)
@@ -87,7 +125,11 @@ describe('when there is initially some blogs saved', () => {
         likes: 45,
       }
 
-      await api.post('/api/blogs').send(blogWithoutTitle).expect(400)
+      await api
+        .post('/api/blogs')
+        .set('authorization', `Bearer ${token}`)
+        .send(blogWithoutTitle)
+        .expect(400)
     })
 
     test('respond with 400 bad request if url missing', async () => {
@@ -97,7 +139,11 @@ describe('when there is initially some blogs saved', () => {
         likes: 45,
       }
 
-      await api.post('/api/blogs').send(blogWithoutUrl).expect(400)
+      await api
+        .post('/api/blogs')
+        .send(blogWithoutUrl)
+        .set('authorization', `Bearer ${token}`)
+        .expect(400)
     })
   })
 
@@ -106,7 +152,10 @@ describe('when there is initially some blogs saved', () => {
       const blogsAtStart = await helper.blogsInDb()
       const blogToDelete = blogsAtStart[0]
 
-      await api.delete(`/api/blogs/${blogToDelete.id}`).expect(204)
+      await api
+        .delete(`/api/blogs/${blogToDelete.id}`)
+        .set('authorization', `Bearer ${token}`)
+        .expect(204)
 
       const blogsAtEnd = await helper.blogsInDb()
       const ids = blogsAtEnd.map((b) => b.id)
@@ -117,7 +166,10 @@ describe('when there is initially some blogs saved', () => {
 
     test('fails with status code 400 if invalid id', async () => {
       const invalidId = '5a3d5da59070081a82a3445'
-      await api.delete(`/api/blogs/${invalidId}`).expect(400)
+      await api
+        .delete(`/api/blogs/${invalidId}`)
+        .set('authorization', `Bearer ${token}`)
+        .expect(400)
     })
   })
 
@@ -125,7 +177,6 @@ describe('when there is initially some blogs saved', () => {
     test('updates the number of likes successfully', async () => {
       const blogsAtStart = await helper.blogsInDb()
       const blogToUpdate = blogsAtStart[0]
-
       const updatedBlog = { ...blogToUpdate, likes: 12 }
 
       const response = await api
@@ -133,7 +184,16 @@ describe('when there is initially some blogs saved', () => {
         .send(updatedBlog)
         .expect(200)
 
-      assert.deepStrictEqual(response.body, updatedBlog)
+      assert.deepStrictEqual(
+        {
+          id: response.body.id,
+          likes: response.body.likes,
+        },
+        {
+          id: updatedBlog.id,
+          likes: updatedBlog.likes,
+        }
+      )
     })
 
     test('fails with a status code 404 if blog does not exist', async () => {
