@@ -32,9 +32,15 @@ const App = () => {
       setUser(user)
       setUsername('')
       setPassword('')
+      window.localStorage.setItem('loggedBlogappUser', JSON.stringify(user))
     } catch {
       setErrorMessage('')
     }
+  }
+
+  const logout = () => {
+    window.localStorage.removeItem('loggedBlogappUser')
+    setUser(null)
   }
 
   return (
@@ -48,6 +54,7 @@ const App = () => {
       )}
       {user && (
         <div>
+          <button onClick={logout}>Logout</button>
           <h3>Hello {user.name}!</h3>
           <h2>blogs</h2>
           {blogs.map((blog) => (
