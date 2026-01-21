@@ -54,7 +54,7 @@ describe('total likes', () => {
     },
     { name: 'of empty list of blogs is zero',
       blogs: blogsEmpty,
-      expected: 0 
+      expected: 0
     },
     {
       name: 'when list has only one blog equals the likes of that',
