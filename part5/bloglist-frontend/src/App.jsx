@@ -1,5 +1,4 @@
 import { useState, useEffect, useRef } from 'react'
-
 import Blog from './components/Blog'
 import LoginForm from './components/LoginForm'
 import BlogForm from './components/BlogForm'
@@ -104,9 +103,7 @@ const App = () => {
             ))}
             <br />
             <Togglable buttonLabel='create new blog' ref={blogFormRef}>
-              <BlogForm
-                createBlog={createBlog}
-              />
+              <BlogForm createBlog={createBlog} />
             </Togglable>
           </div>
         </>
