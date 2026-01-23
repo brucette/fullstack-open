@@ -65,6 +65,11 @@ const App = () => {
     }
   }
 
+  const likeBlog = async (blogObject) => {
+    await blogService.like(blogObject)
+    blogService.getAll().then((blogs) => setBlogs(blogs))
+  }
+
   const logout = () => {
     window.localStorage.removeItem('loggedBlogappUser')
     setUser(null)
@@ -72,11 +77,9 @@ const App = () => {
 
   return (
     <>
-      {errorMessage && (
-        <Notification type='error' message={errorMessage} />
-      )}
+      {errorMessage && <Notification type="error" message={errorMessage} />}
       {successMessage && (
-        <Notification type='success' message={successMessage} />
+        <Notification type="success" message={successMessage} />
       )}
       {!user && (
         <>
@@ -92,17 +95,35 @@ const App = () => {
         <>
           <span style={{ color: 'darkblue' }}>
             <span> {user.name} logged in </span>
-            <button style={{ color: 'darkblue', borderRadius: '80px', padding: '0.5rem' }} onClick={logout}>
+            <button
+              style={{
+                color: 'darkblue',
+                borderRadius: '80px',
+                padding: '0.5rem',
+              }}
+              onClick={logout}
+            >
               Logout
             </button>
           </span>
           <div>
             <h2>blogs</h2>
             {blogs.map((blog) => (
-              <Blog key={blog.id} blog={blog} />
+              <Blog
+                key={blog.id}
+                blog={blog}
+                likeBlog={() =>
+                  likeBlog({
+                    ...blog,
+                    likes: blog.likes + 1,
+                    user: blog.user.id,
+                  })
+                }
+              />
             ))}
+
             <br />
-            <Togglable buttonLabel='create new blog' ref={blogFormRef}>
+            <Togglable buttonLabel="create new blog" ref={blogFormRef}>
               <BlogForm createBlog={createBlog} />
             </Togglable>
           </div>
