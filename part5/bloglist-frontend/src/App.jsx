@@ -66,8 +66,8 @@ const App = () => {
   }
 
   const likeBlog = async (blogObject) => {
-    await blogService.like(blogObject)
-    blogService.getAll().then((blogs) => setBlogs(blogs))
+    const likedBlog = await blogService.like(blogObject)
+    setBlogs(blogs.map(b => b.id === likedBlog.id ? likedBlog : b))
   }
 
   const logout = () => {
