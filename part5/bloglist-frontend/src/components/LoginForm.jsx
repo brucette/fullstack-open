@@ -1,4 +1,3 @@
-
 const LoginForm = ({ handleLogin, setUsername, setPassword }) => {
   return (
     <div>
@@ -7,21 +6,21 @@ const LoginForm = ({ handleLogin, setUsername, setPassword }) => {
           <label>
             username
             <input
-              type='text'
+              type="text"
               onChange={({ target }) => setUsername(target.value)}
-              />
+            />
           </label>
         </div>
         <div>
           <label>
             password
             <input
-              type='text'
+              type="text"
               onChange={({ target }) => setPassword(target.value)}
             />
           </label>
         </div>
-        <button type='submit'>login</button>
+        <button type="submit">login</button>
       </form>
     </div>
   )

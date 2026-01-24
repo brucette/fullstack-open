@@ -7,8 +7,8 @@ const Blog = ({ blog, deleteBlog, likeBlog, username }) => {
   const blogStyle = {
     padding: 8,
     paddingLeft: 5,
-    border: '1px solid #c0c0c0', 
-    borderRadius: '6px',            
+    border: '1px solid #c0c0c0',
+    borderRadius: '6px',
     boxShadow: '0 4px 8px rgba(0,0,0,0.2)',
     marginBottom: 5,
   }
@@ -54,7 +54,7 @@ const Blog = ({ blog, deleteBlog, likeBlog, username }) => {
         <span>{blog.user?.name}</span>
         {blog.user?.username === username && (
           <button onClick={deleteBlog} style={buttonStyle}>remove</button>
-        )} 
+        )}
       </div>
     </div>
   )
