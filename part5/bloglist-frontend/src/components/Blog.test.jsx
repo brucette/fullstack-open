@@ -9,9 +9,12 @@ const blog = {
   likes: 0,
 }
 
+let user
+
 describe('<Blog />', () => {
-  // beforeEach(() => {
-  // })
+  beforeEach(() => {
+    user = userEvent.setup()
+  })
 
   test('renders title and author, but not URL or likes by default', () => {
     render(<Blog blog={blog} />)
@@ -31,7 +34,6 @@ describe('<Blog />', () => {
     render(<Blog blog={blog} />)
 
     const viewButton = screen.getByText('view')
-    const user = userEvent.setup()
     await user.click(viewButton)
 
     const url = screen.getByText('https://example.com/blog/promise-land3')
@@ -46,7 +48,6 @@ describe('<Blog />', () => {
     render(<Blog blog={blog} likeBlog={likeBlog}/>)
 
     const viewButton = screen.getByText('view')
-    const user = userEvent.setup()
     await user.click(viewButton)
 
     const likeButton = screen.getByText('like')
