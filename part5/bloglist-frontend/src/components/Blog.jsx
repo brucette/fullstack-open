@@ -40,20 +40,26 @@ const Blog = ({ blog, deleteBlog, likeBlog, username }) => {
   return (
     <div style={blogStyle}>
       <div>
-        {blog.title}, <i>{blog.author}</i>
+        <span>
+          {blog.title}, <i>{blog.author}</i>
+        </span>
         <span>
           {' '}
           <button onClick={toggleView}>{label}</button>
         </span>
       </div>
       <div style={displayDetails}>
-        <a href={blog.url}>{blog.url}</a>
+        <a href={blog.url}>
+          {blog.url}
+        </a>
         <p>
           likes {blog.likes} <button onClick={likeBlog}>like</button>
         </p>
         <span>{blog.user?.name}</span>
         {blog.user?.username === username && (
-          <button onClick={deleteBlog} style={buttonStyle}>remove</button>
+          <button onClick={deleteBlog} style={buttonStyle}>
+            remove
+          </button>
         )}
       </div>
     </div>
